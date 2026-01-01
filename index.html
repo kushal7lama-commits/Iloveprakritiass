@@ -1,63 +1,162 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Merry Christmas ❤️</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy New Year Prakriti</title>
   <style>
+    * { box-sizing: border-box; font-family: 'Georgia', 'Segoe UI', sans-serif; }
     body {
-      background: linear-gradient(#ffd6e8, #ffffff);
-      font-family: Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #2b1055, #0b0620 60%);
+      color: #fff;
+      overflow: hidden;
+    }
+    .card {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      padding: 32px 26px;
+      border-radius: 24px;
       text-align: center;
-      padding-top: 60px;
+      max-width: 440px;
+      width: 92%;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.45);
+      position: relative;
+      z-index: 2;
     }
-    h1 { 
-  color: #c2185b; 
-  animation: pop 0.6s ease-in-out infinite alternate;
-}
-
-@keyframes pop {
-  from { transform: scale(1); }
-  to { transform: scale(1.05); }
-}
-    
-    p { font-size: 18px; }
-    button {
+    .title {
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      opacity: 0.85;
+      margin-bottom: 6px;
+    }
+    .name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #ffd1dc;
+    }
+    .time {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin: 18px 0 10px;
+    }
+    .box {
+      background: rgba(0,0,0,0.35);
+      padding: 12px 6px;
+      border-radius: 14px;
+    }
+    .num { font-size: 1.6rem; font-weight: 700; }
+    .label { font-size: 0.65rem; letter-spacing: 1px; opacity: 0.7; margin-top: 4px; }
+    .message {
+      margin-top: 14px;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      color: #fff;
+      display: none;
+    }
+    .hearts span {
+      position: absolute;
+      bottom: -20px;
       font-size: 18px;
-      padding: 10px 22px;
-      margin: 12px;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
+      animation: floatUp 6s linear infinite;
+      opacity: 0.9;
     }
-    .yes { background: #e91e63; color: white; }
-    .no { background: #bdbdbd; }
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(0.8); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translateY(-110vh) scale(1.3); opacity: 0; }
+    }
+    canvas { position: fixed; inset: 0; z-index: 1; }
   </style>
-  <script>
-  function yesClick() {
-    document.body.innerHTML = `
-      <h1>👏👏👏</h1>
-      <h1>YAYYYY!!!</h1>
-      <p>You just unlocked unlimited smiles 😌</p>
-      <p>Someone’s heart is doing a happy dance 💃🕺</p>
-      <p><b>Prakriti</b>, you’re adorable.</p>
-      <p>And yes… I’m smiling like an idiot right now ❤️</p>
-      <p>🎄 Merry Christmas, beautiful ✨</p>
-    `;
-  }
-
-  function noClick() {
-    alert("😠 That’s illegal. Try again.");
-  }
-  </script>
-  
 </head>
-
 <body>
-  <h1>🎄 Merry Christmas 🎄</h1>
-  <p>This page exists for one simple question.</p>
-  <p><b>Do you love me?</b></p>
+  <canvas id="fireworks"></canvas>
 
-  <button class="yes" onclick="yesClick()">Yes ❤️</button>
-  <button class="no" onclick="noClick()">No 🙃</button>
+  <div class="card">
+    <div class="title">open when it’s</div>
+    <div class="name">Prakriti ❤️</div>
+    <div class="time" id="countdown">
+      <div class="box"><div class="num" id="days">00</div><div class="label">DAYS</div></div>
+      <div class="box"><div class="num" id="hours">00</div><div class="label">HOURS</div></div>
+      <div class="box"><div class="num" id="minutes">00</div><div class="label">MINS</div></div>
+      <div class="box"><div class="num" id="seconds">10</div><div class="label">SECS</div></div>
+    </div>
+    <div class="message" id="finalMsg">
+      Happy New Year my love 💖<br/>
+      Prakriti, this year my love for u is bigger than ever ✨
+    </div>
+  </div>
+
+  <div class="hearts" id="hearts"></div>
+
+  <script>
+    // 10-second countdown
+    let remaining = 10;
+    const secEl = document.getElementById('seconds');
+    const finalMsg = document.getElementById('finalMsg');
+    const countdown = document.getElementById('countdown');
+
+    const timer = setInterval(() => {
+      remaining--;
+      secEl.textContent = String(Math.max(remaining, 0)).padStart(2, '0');
+      if (remaining <= 0) {
+        clearInterval(timer);
+        countdown.style.display = 'none';
+        finalMsg.style.display = 'block';
+        launchFireworks();
+      }
+    }, 1000);
+
+    // Hearts animation
+    const hearts = document.getElementById('hearts');
+    const heartEmojis = ['❤️','💖','💕','💘','💗'];
+    setInterval(() => {
+      const h = document.createElement('span');
+      h.textContent = heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
+      h.style.left = Math.random()*100 + 'vw';
+      h.style.animationDuration = 4 + Math.random()*3 + 's';
+      hearts.appendChild(h);
+      setTimeout(()=>h.remove(), 7000);
+    }, 350);
+
+    // Simple fireworks
+    const canvas = document.getElementById('fireworks');
+    const ctx = canvas.getContext('2d');
+    function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+    addEventListener('resize', resize); resize();
+
+    let particles = [];
+    function burst(x,y){
+      for(let i=0;i<80;i++){
+        particles.push({
+          x,y,
+          vx:(Math.random()-0.5)*6,
+          vy:(Math.random()-0.5)*6,
+          life: 60
+        });
+      }
+    }
+    function draw(){
+      ctx.fillStyle='rgba(0,0,0,0.2)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      particles.forEach(p=>{
+        p.x+=p.vx; p.y+=p.vy; p.vy+=0.02; p.life--;
+        ctx.fillStyle='rgba(255,200,230,0.9)';
+        ctx.fillRect(p.x,p.y,2,2);
+      });
+      particles = particles.filter(p=>p.life>0);
+      requestAnimationFrame(draw);
+    }
+    function launchFireworks(){
+      setInterval(()=>burst(Math.random()*canvas.width, Math.random()*canvas.height*0.6), 500);
+      draw();
+    }
+  </script>
 </body>
 </html>
