@@ -14,20 +14,24 @@ h1,h2 { text-align:center; color:#ff0066; margin:10px 0; }
 /* Lock Screen */
 #lockScreen { width:100%; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; color:white; text-shadow:2px 2px 5px #000; background:url('https://i.ibb.co/3v0VYbM/hello-kitty.png') center/cover no-repeat; }
 
-/* Safe Message */
+/* Pages */
 #safeMessage, #countdown, #happyNewYear, .questionPage, #resultPage, #proposalPage { width:100%; height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; }
 #safeMessage { background:#ffe6f0; font-size:28px; color:#ff3399; }
 #countdown { font-size:60px; color:#ff3399; background:#ffe6f0; position:relative; }
-#happyNewYear { background:#ffccf2; position:relative; }
+#happyNewYear { background:#ffccf2; position:relative; overflow:hidden; }
 canvas { position:absolute; top:0; left:0; z-index:0; width:100%; height:100%; }
 #happyText { position:relative; z-index:2; font-size:36px; color:#ff0066; }
 .questionPage { background:#ffe6f0; justify-content:flex-start; padding-top:60px; }
 #resultPage { background:#fff0f5; overflow-y:auto; }
 #resultPage div { margin:10px; padding:10px; border-radius:10px; background:#ffe6f0; width:80%; word-wrap:break-word; }
-#proposalPage { background:#ffccf2; font-size:36px; color:#ff0066; position:relative; }
+#proposalPage { background:#ffccf2; font-size:36px; color:#ff0066; position:relative; overflow:hidden; }
 
-.kitty { position:absolute; width:50px; height:50px; pointer-events:none; animation:float 10s linear infinite; }
+/* Floating Kitty and Hearts */
+.kitty, .heart { position:absolute; width:50px; height:50px; pointer-events:none; }
+.kitty { animation:float 10s linear infinite; }
+.heart { width:30px; height:30px; animation:heartFloat 6s linear infinite; }
 @keyframes float { 0%{ transform: translateY(100vh) translateX(0);} 100%{transform:translateY(-50px) translateX(500px);}}
+@keyframes heartFloat { 0%{ transform: translateY(100vh) translateX(0) rotate(0deg); opacity:1;} 100%{transform: translateY(-100px) translateX(200px) rotate(360deg); opacity:0;}}
 </style>
 </head>
 <body>
@@ -111,6 +115,17 @@ function createKitty(){
 }
 setInterval(createKitty,500);
 
+/* Floating Hearts */
+function createHeart(){
+  let h=document.createElement('img');
+  h.src='https://i.ibb.co/N9bY6tM/heart.png';
+  h.className='heart';
+  h.style.left=Math.random()*window.innerWidth+'px';
+  h.style.animationDuration=(4+Math.random()*3)+'s';
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+}
+
 /* Password */
 function checkPassword(){
   let p=document.getElementById('passwordInput').value.trim().toLowerCase();
@@ -135,7 +150,7 @@ function startCountdownInterface(){
   },1000);
 }
 
-/* Big Fireworks */
+/* Fireworks + hearts */
 function showHappyNewYear(){
   const page=document.getElementById('happyNewYear');
   page.classList.remove('hidden');
@@ -144,9 +159,12 @@ function showHappyNewYear(){
   canvas.width=window.innerWidth;
   canvas.height=window.innerHeight;
   let fireworks=[],particles=[];
-  
+
   function Firework(){ this.x=canvas.width/2; this.y=canvas.height; this.tx=Math.random()*canvas.width; this.ty=Math.random()*canvas.height/2; this.color='hsl('+Math.random()*360+',100%,50%)'; }
-  Firework.prototype.update=function(){ this.x+=(this.tx-this.x)*0.05; this.y+=(this.ty-this.y)*0.05; if(Math.abs(this.x-this.tx)<2 && Math.abs(this.y-this.ty)<2){ explode(this.x,this.y,this.color); this.x=canvas.width/2; this.y=canvas.height; this.tx=Math.random()*canvas.width; this.ty=Math.random()*canvas.height/2; document.getElementById('fireworkSound').currentTime=0; document.getElementById('fireworkSound').play(); } }
+  Firework.prototype.update=function(){
+    this.x+=(this.tx-this.x)*0.05; this.y+=(this.ty-this.y)*0.05;
+    if(Math.abs(this.x-this.tx)<2 && Math.abs(this.y-this.ty)<2){ explode(this.x,this.y,this.color); this.x=canvas.width/2; this.y=canvas.height; this.tx=Math.random()*canvas.width; this.ty=Math.random()*canvas.height/2; document.getElementById('fireworkSound').currentTime=0; document.getElementById('fireworkSound').play(); createHeart(); }
+  }
   Firework.prototype.draw=function(){ ctx.beginPath(); ctx.arc(this.x,this.y,5,0,Math.PI*2); ctx.fillStyle=this.color; ctx.fill(); }
 
   function Particle(x,y,color){ this.x=x; this.y=y; this.vx=(Math.random()-0.5)*10; this.vy=(Math.random()-0.5)*10; this.alpha=1; this.color=color; }
@@ -165,10 +183,8 @@ function showHappyNewYear(){
     requestAnimationFrame(animate);
   }
   animate();
-
-  setTimeout(()=>{
-    page.classList.add('hidden'); showQuestion(1);
-  },8000);
+  setInterval(createHeart,500);
+  setTimeout(()=>{ page.classList.add('hidden'); showQuestion(1); },8000);
 }
 
 /* Questions */
@@ -194,6 +210,7 @@ function showProposal(){
   document.getElementById('resultPage').classList.add('hidden');
   document.getElementById('proposalPage').classList.remove('hidden');
   document.getElementById('kissSound').play();
+  setInterval(createHeart,400);
 }
 </script>
 </body>
