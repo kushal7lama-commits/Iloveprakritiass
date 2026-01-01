@@ -1,226 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Happy New Year Prakriti Lama</title>
-  <style>
-    * { box-sizing: border-box; font-family: 'Georgia', 'Segoe UI', sans-serif; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at top, #2b1055, #0b0620 60%);
-      color: #fff;
-      overflow: hidden;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Year Proposal</title>
+<style>
+    /* General Styles */
+    body, html {
+        margin: 0;
+        padding: 0;
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+        overflow: hidden;
+        background: #ffe6f0;
     }
-    .card {
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(12px);
-      padding: 28px 22px;
-      border-radius: 24px;
-      text-align: center;
-      max-width: 460px;
-      width: 92%;
-      box-shadow: 0 30px 60px rgba(0,0,0,0.45);
-      position: relative;
-      z-index: 2;
+    .hidden { display: none; }
+    button { padding: 10px 20px; margin: 10px; cursor: pointer; border-radius: 8px; border: none; background: #ff99cc; color: white; font-weight: bold; }
+    input { padding: 10px; border-radius: 8px; border: 2px solid #ff99cc; width: 80%; max-width: 300px; }
+    h1, h2, h3 { text-align: center; }
+
+    /* Lock Screen */
+    #lockScreen {
+        width: 100%;
+        height: 100vh;
+        background: url('https://i.ibb.co/7Yx5mNq/A-digital-illustration-of-an-interactive-lock-scre.png') no-repeat center/cover;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        text-shadow: 2px 2px 5px #000;
     }
-    .title { font-size: 0.9rem; letter-spacing: 2px; opacity: 0.85; margin-bottom: 6px; }
-    .name { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; color: #ffd1dc; }
-    .time { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0 10px; }
-    .box { background: rgba(0,0,0,0.35); padding: 12px 6px; border-radius: 14px; }
-    .num { font-size: 1.6rem; font-weight: 700; }
-    .label { font-size: 0.65rem; letter-spacing: 1px; opacity: 0.7; margin-top: 4px; }
-    .message { margin-top: 14px; font-size: 1.05rem; line-height: 1.5; display: none; min-height: 60px; }
-    .page { display: none; margin-top: 10px; }
-    .page h3 { margin: 8px 0 6px; color: #ffd1dc; }
-    textarea { width: 100%; min-height: 90px; border-radius: 12px; border: none; padding: 10px; resize: vertical; }
-    button { margin-top: 10px; padding: 10px 16px; border-radius: 999px; border: none; cursor: pointer; }
-    .primary { background: #ffd1dc; color: #2b1055; font-weight: 700; }
-    .ghost { background: rgba(255,255,255,0.2); color: #fff; }
-    .hearts span { position: absolute; bottom: -20px; font-size: 18px; animation: floatUp 6s linear infinite; opacity: 0.9; }
-    @keyframes floatUp { 0% { transform: translateY(0) scale(0.8); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(-110vh) scale(1.3); opacity: 0; } }
-    canvas { position: fixed; inset: 0; z-index: 1; }
-  </style>
+    #lockScreen input { font-size: 18px; text-align: center; }
+    #lockScreen button { font-size: 18px; }
+
+    /* Countdown */
+    #countdown {
+        width: 100%;
+        height: 100vh;
+        background: #ffe6f0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 60px;
+        color: #ff3399;
+        position: relative;
+    }
+
+    /* Happy New Year Page */
+    #happyNewYear {
+        width: 100%;
+        height: 100vh;
+        background: #ffccf2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #ff0066;
+        font-size: 50px;
+        position: relative;
+    }
+    canvas { position: absolute; top: 0; left: 0; z-index: 0; }
+
+    /* Questions Page */
+    .questionPage {
+        width: 100%;
+        height: 100vh;
+        background: #ffe6f0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        text-align: center;
+    }
+    .questionPage textarea {
+        width: 80%;
+        max-width: 400px;
+        height: 100px;
+        border-radius: 8px;
+        border: 2px solid #ff99cc;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    /* Result Page */
+    #resultPage {
+        width: 100%;
+        min-height: 100vh;
+        background: #fff0f5;
+        padding: 20px;
+        overflow-y: auto;
+        text-align: center;
+    }
+    #resultPage div { margin-bottom: 20px; padding: 10px; border-radius: 10px; background: #ffe6f0; }
+
+    /* Proposal Page */
+    #proposalPage {
+        width: 100%;
+        height: 100vh;
+        background: #ffccf2;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 50px;
+        color: #ff0066;
+        position: relative;
+    }
+
+    /* Floating Hello Kitty */
+    .kitty {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        pointer-events: none;
+        animation: float 10s linear infinite;
+    }
+    @keyframes float {
+        0% { transform: translateY(100vh) translateX(0); }
+        100% { transform: translateY(-50px) translateX(500px); }
+    }
+</style>
 </head>
 <body>
-  <audio id="bgm" loop>
-    <source src="https://cdn.pixabay.com/download/audio/2022/10/30/audio_1f77fd4b45.mp3" type="audio/mpeg">
-  </audio>
 
-  <canvas id="fireworks"></canvas>
+<!-- Lock Screen -->
+<div id="lockScreen">
+    <h1>Hello Kitty Lock</h1>
+    <input type="text" id="passwordInput" placeholder="Enter password">
+    <button onclick="checkPassword()">Unlock</button>
+    <p>Hint: When we started our relationship?</p>
+    <p id="lockMsg" style="color:yellow;"></p>
+</div>
 
-  <div class="card">
-    <!-- Password Lock -->
-    <div class="page" id="lock" style="display:block">
-      <h3>Password check 🔐</h3>
-      <p style="opacity:.85">Hint: when we started our relationship</p>
-      <input id="pwd" placeholder="e.g. May 17" style="width:100%;padding:10px;border-radius:12px;border:none" />
-      <button class="primary" onclick="checkPwd()">Unlock</button>
-      <div class="message" id="lockMsg"></div>
-    </div>
-    <div class="title">open when it’s</div>
-    <div class="name">Prakriti Lama ❤️</div>
+<!-- Countdown -->
+<div id="countdown" class="hidden">
+    <h1 id="countdownNumber">10</h1>
+</div>
 
-    <div class="time" id="countdown" style="display:none">
-      <div class="box"><div class="num">00</div><div class="label">DAYS</div></div>
-      <div class="box"><div class="num">00</div><div class="label">HOURS</div></div>
-      <div class="box"><div class="num">00</div><div class="label">MINS</div></div>
-      <div class="box"><div class="num" id="seconds">10</div><div class="label">SECS</div></div>
-    </div>
+<!-- Happy New Year -->
+<div id="happyNewYear" class="hidden">
+    <canvas id="fireworks"></canvas>
+    <h1>Happy New Year!</h1>
+</div>
 
-    <div class="message" id="finalMsg"></div>
+<!-- Question Pages -->
+<div id="question1" class="questionPage hidden">
+    <h2>Question 1: What do you love most about us?</h2>
+    <textarea id="answer1"></textarea>
+    <button onclick="nextQuestion(1)">Next</button>
+</div>
 
-    <div class="page" id="page1">
-      <h3>What do u expect for this year with me? 💭</h3>
-      <textarea id="q1"></textarea>
-      <button class="primary" onclick="saveAndNext('q1','expectations',2)">Next</button>
-    </div>
+<div id="question2" class="questionPage hidden">
+    <h2>Question 2: Describe our happiest memory together.</h2>
+    <textarea id="answer2"></textarea>
+    <button onclick="nextQuestion(2)">Next</button>
+</div>
 
-    <div class="page" id="page2">
-      <h3>Things u wanna do (naughty but sweet) with me 😌</h3>
-      <textarea id="q2"></textarea>
-      <button class="primary" onclick="saveAndNext('q2','wants',3)">Next</button>
-    </div>
+<div id="question3" class="questionPage hidden">
+    <h2>Question 3: How do you imagine our future together?</h2>
+    <textarea id="answer3"></textarea>
+    <button onclick="nextQuestion(3)">Next</button>
+</div>
 
-    <div class="page" id="page4">
-      <h3>Three things u expect this year 🌸</h3>
-      <textarea id="q4"></textarea>
-      <button class="primary" onclick="saveAndNext('q4','expectThisYear',5)">Next</button>
-    </div>
+<div id="question4" class="questionPage hidden">
+    <h2>Question 4: Write a message to me from your heart.</h2>
+    <textarea id="answer4"></textarea>
+    <button onclick="nextQuestion(4)">Next</button>
+</div>
 
-    <div class="page" id="page5">
-      <h3>Do u wanna marry me? 💍</h3>
-      <button class="primary" onclick="answerYes()">Yes</button>
-      <button class="ghost" onclick="answerNo()">No</button>
-      <div class="message" id="answer"></div>
-    </div>
+<!-- Result Page -->
+<div id="resultPage" class="hidden">
+    <h1>Your Answers</h1>
+    <div><strong>Question 1:</strong> <span id="res1"></span></div>
+    <div><strong>Question 2:</strong> <span id="res2"></span></div>
+    <div><strong>Question 3:</strong> <span id="res3"></span></div>
+    <div><strong>Question 4:</strong> <span id="res4"></span></div>
+    <button onclick="showProposal()">See Proposal 💖</button>
+</div>
 
-    <div class="page" id="page3">
-      <h3>Three things u love about me 💕</h3>
-      <textarea id="q3"></textarea>
-      <button class="primary" onclick="saveAndNext('q3','loveAbout',4)">Next</button>
-    </div>
-    </div>
-  </div>
+<!-- Proposal Page -->
+<div id="proposalPage" class="hidden">
+    <h1>Will u marry me?</h1>
+</div>
 
-  <div class="hearts" id="hearts"></div>
+<!-- Audio -->
+<audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" loop autoplay></audio>
+<audio id="kissSound" src="https://www.soundjay.com/human/sounds/kiss-1.mp3"></audio>
 
-  <script>
-    const bgm = document.getElementById('bgm');
+<script>
+/* Floating Hello Kitty */
+function createKitty() {
+    let kitty = document.createElement('img');
+    kitty.src = 'https://i.ibb.co/3v0VYbM/hello-kitty.png';
+    kitty.className = 'kitty';
+    kitty.style.left = Math.random() * window.innerWidth + 'px';
+    kitty.style.animationDuration = (5 + Math.random() * 5) + 's';
+    document.body.appendChild(kitty);
+    setTimeout(() => kitty.remove(), 10000);
+}
+setInterval(createKitty, 500);
 
-    // Typing animation
-    function typeText(el, text, cb){
-      el.innerHTML = '';
-      el.style.display = 'block';
-      let i = 0;
-      const t = setInterval(()=>{
-        el.innerHTML += text.charAt(i);
-        i++;
-        if(i >= text.length){ clearInterval(t); if(cb) cb(); }
-      }, 40);
+/* Lock Screen Password */
+function checkPassword() {
+    let input = document.getElementById('passwordInput').value.trim();
+    let msg = document.getElementById('lockMsg');
+    if(input.toLowerCase() === 'may 17') {
+        document.getElementById('lockScreen').classList.add('hidden');
+        startCountdown();
+    } else {
+        msg.textContent = 'Wrong password! Try again 😘';
     }
+}
 
-    // Countdown
-    let remaining = 10;
-    const secEl = document.getElementById('seconds');
-    const finalMsg = document.getElementById('finalMsg');
-    const countdown = document.getElementById('countdown');
-    const timer = setInterval(() => {
-      remaining--;
-      secEl.textContent = String(Math.max(remaining, 0)).padStart(2, '0');
-      if (remaining <= 0) {
-        clearInterval(timer);
-        countdown.style.display = 'none';
-        bgm.play();
-        typeText(finalMsg, 'Happy New Year my love 💖\nThis year my love for u is bigger than ever ✨', ()=>{
-          finalMsg.innerHTML += '<br/><br/><button class="primary" onclick="goPage(1)">Next</button>';
-        });
-        launchFireworks();
-      }
+/* Countdown */
+function startCountdown() {
+    let countDiv = document.getElementById('countdown');
+    let number = document.getElementById('countdownNumber');
+    let count = 10;
+    countDiv.classList.remove('hidden');
+    let interval = setInterval(() => {
+        number.textContent = count;
+        count--;
+        if(count < 0) {
+            clearInterval(interval);
+            countDiv.classList.add('hidden');
+            showHappyNewYear();
+        }
     }, 1000);
+}
 
-    // Hearts
-    const hearts = document.getElementById('hearts');
-    const heartEmojis = ['❤️','💖','💕','💘','💗'];
-    setInterval(() => {
-      const h = document.createElement('span');
-      h.textContent = heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
-      h.style.left = Math.random()*100 + 'vw';
-      h.style.animationDuration = 4 + Math.random()*3 + 's';
-      hearts.appendChild(h);
-      setTimeout(()=>h.remove(), 7000);
-    }, 350);
+/* Fireworks Animation */
+function showHappyNewYear() {
+    let page = document.getElementById('happyNewYear');
+    page.classList.remove('hidden');
 
-    function goPage(n){
-      document.querySelectorAll('.page').forEach(p=>p.style.display='none');
-      finalMsg.style.display='none';
-      document.getElementById('page'+n).style.display='block';
-    }
-    function checkPwd(){
-      const v = document.getElementById('pwd').value.trim().toLowerCase();
-      const m = document.getElementById('lockMsg');
-      if(v === 'may 17' || v === '17 may'){
-        m.style.display='block';
-        typeText(m,'😌 You are safe. Welcome, my love.');
-        document.getElementById('lock').style.display='none';
-        document.getElementById('countdown').style.display='grid';
-      } else {
-        m.style.display='block';
-        typeText(m,'😠 Wrong. Try again.');
-      }
-    }
-    
-      document.querySelectorAll('.page').forEach(p=>p.style.display='none');
-      finalMsg.style.display='none';
-      document.getElementById('page'+n).style.display='block';
-    }
-    function countSentences(t){ return t.split(/[.!?]+/).filter(s=>s.trim()).length; }
-    function saveAndNext(id,key,next){
-      const t = document.getElementById(id).value;
-      if(countSentences(t) < 3){ alert("u haven't write yet — need 3 sentences 💕"); return; }
-      localStorage.setItem(key, t);
-      goPage(next);
-    }
-
-    function answerYes(){
-      localStorage.setItem('marry','yes');
-      const a = document.getElementById('answer');
-      typeText(a,'💋💋💋💋💋
-Come here 😘 I choose u, today and always ❤️');
-      launchFireworks();
-      burstHearts();
-    }
-    function burstHearts(){
-      for(let i=0;i<30;i++){
-        const h=document.createElement('span');
-        h.textContent=Math.random()>0.5?'❤️':'🎀';
-        h.style.left=50+ (Math.random()*20-10)+'vw';
-        h.style.animationDuration=2+Math.random()*2+'s';
-        hearts.appendChild(h);
-        setTimeout(()=>h.remove(),4000);
-      }
-    }
-    function answerNo(){
-      const a = document.getElementById('answer');
-      typeText(a, '😤 Nope. Wrong answer. Try again.');
-    }
-
-    // Fireworks
     const canvas = document.getElementById('fireworks');
     const ctx = canvas.getContext('2d');
-    function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
-    addEventListener('resize', resize); resize();
-    let particles = [];
-    function burst(x,y){ for(let i=0;i<80;i++){ particles.push({x,y,vx:(Math.random()-0.5)*6,vy:(Math.random()-0.5)*6,life:60}); } }
-    function draw(){ ctx.fillStyle='rgba(0,0,0,0.2)'; ctx.fillRect(0,0,canvas.width,canvas.height);
-      particles.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.02; p.life--; ctx.fillStyle='rgba(255,200,230,0.9)'; ctx.fillRect(p.x,p.y,2,2); });
-      particles = particles.filter(p=>p.life>0); requestAnimationFrame(draw); }
-    function launchFireworks(){ setInterval(()=>burst(Math.random()*canvas.width, Math.random()*canvas.height*0.6), 500); draw(); }
-  </script>
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    function Firework() {
+        this.x = Math.random() * canvas.width;
+        this.y = canvas.height;
+        this.targetY = Math.random() * canvas.height/2;
+        this.color = 'hsl(' + Math.random()*360 + ',100%,50%)';
+        this.speed = 2 + Math.random()*3;
+        this.radius = 2 + Math.random()*2;
+    }
+    Firework.prototype.update = function() {
+        this.y -= this.speed;
+        if(this.y <= this.targetY) {
+            this.y = canvas.height;
+            this.targetY = Math.random()*canvas.height/2;
+        }
+    }
+    Firework.prototype.draw = function() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+    }
+
+    let fireworks = [];
+    for(let i=0;i<50;i++) fireworks.push(new Firework());
+
+    function animate() {
+        ctx.fillStyle = 'rgba(255,230,240,0.2)';
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        fireworks.forEach(fw => { fw.update(); fw.draw(); });
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    setTimeout(() => {
+        page.classList.add('hidden');
+        showQuestion(1);
+    }, 5000); // 5 seconds display
+}
+
+/* Question Pages */
+let answers = {};
+function showQuestion(num) {
+    document.getElementById('question'+num).classList.remove('hidden');
+}
+
+function nextQuestion(num) {
+    let textarea = document.getElementById('answer'+num);
+    let value = textarea.value.trim();
+    if(value.split('.').filter(s=>s.trim()!=='').length < 3){
+        alert('Please write at least 3 sentences!');
+        return;
+    }
+    answers['res'+num] = value;
+    document.getElementById('question'+num).classList.add('hidden');
+    if(num<4) {
+        showQuestion(num+1);
+    } else {
+        showResults();
+    }
+}
+
+/* Result Page */
+function showResults() {
+    document.getElementById('resultPage').classList.remove('hidden');
+    for(let i=1;i<=4;i++){
+        document.getElementById('res'+i).textContent = answers['res'+i];
+    }
+}
+
+/* Proposal Page */
+function showProposal() {
+    document.getElementById('resultPage').classList.add('hidden');
+    let proposal = document.getElementById('proposalPage');
+    proposal.classList.remove('hidden');
+    document.getElementById('kissSound').play();
+}
+</script>
+
 </body>
 </html>
-
