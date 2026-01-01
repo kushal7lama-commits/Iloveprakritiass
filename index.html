@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Happy New Year Prakriti</title>
+  <title>Happy New Year Prakriti Lama</title>
   <style>
     * { box-sizing: border-box; font-family: 'Georgia', 'Segoe UI', sans-serif; }
     body {
@@ -19,101 +19,131 @@
     .card {
       background: rgba(255,255,255,0.1);
       backdrop-filter: blur(12px);
-      padding: 32px 26px;
+      padding: 28px 22px;
       border-radius: 24px;
       text-align: center;
-      max-width: 440px;
+      max-width: 460px;
       width: 92%;
       box-shadow: 0 30px 60px rgba(0,0,0,0.45);
       position: relative;
       z-index: 2;
     }
-    .title {
-      font-size: 0.9rem;
-      letter-spacing: 2px;
-      opacity: 0.85;
-      margin-bottom: 6px;
-    }
-    .name {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 10px;
-      color: #ffd1dc;
-    }
-    .time {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      margin: 18px 0 10px;
-    }
-    .box {
-      background: rgba(0,0,0,0.35);
-      padding: 12px 6px;
-      border-radius: 14px;
-    }
+    .title { font-size: 0.9rem; letter-spacing: 2px; opacity: 0.85; margin-bottom: 6px; }
+    .name { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; color: #ffd1dc; }
+    .time { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0 10px; }
+    .box { background: rgba(0,0,0,0.35); padding: 12px 6px; border-radius: 14px; }
     .num { font-size: 1.6rem; font-weight: 700; }
     .label { font-size: 0.65rem; letter-spacing: 1px; opacity: 0.7; margin-top: 4px; }
-    .message {
-      margin-top: 14px;
-      font-size: 1.05rem;
-      line-height: 1.5;
-      color: #fff;
-      display: none;
-    }
-    .hearts span {
-      position: absolute;
-      bottom: -20px;
-      font-size: 18px;
-      animation: floatUp 6s linear infinite;
-      opacity: 0.9;
-    }
-    @keyframes floatUp {
-      0% { transform: translateY(0) scale(0.8); opacity: 0; }
-      10% { opacity: 1; }
-      100% { transform: translateY(-110vh) scale(1.3); opacity: 0; }
-    }
+    .message { margin-top: 14px; font-size: 1.05rem; line-height: 1.5; display: none; min-height: 60px; }
+    .page { display: none; margin-top: 10px; }
+    .page h3 { margin: 8px 0 6px; color: #ffd1dc; }
+    textarea { width: 100%; min-height: 90px; border-radius: 12px; border: none; padding: 10px; resize: vertical; }
+    button { margin-top: 10px; padding: 10px 16px; border-radius: 999px; border: none; cursor: pointer; }
+    .primary { background: #ffd1dc; color: #2b1055; font-weight: 700; }
+    .ghost { background: rgba(255,255,255,0.2); color: #fff; }
+    .hearts span { position: absolute; bottom: -20px; font-size: 18px; animation: floatUp 6s linear infinite; opacity: 0.9; }
+    @keyframes floatUp { 0% { transform: translateY(0) scale(0.8); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(-110vh) scale(1.3); opacity: 0; } }
     canvas { position: fixed; inset: 0; z-index: 1; }
   </style>
 </head>
 <body>
+  <audio id="bgm" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/10/30/audio_1f77fd4b45.mp3" type="audio/mpeg">
+  </audio>
+
   <canvas id="fireworks"></canvas>
 
   <div class="card">
+    <!-- Password Lock -->
+    <div class="page" id="lock" style="display:block">
+      <h3>Password check 🔐</h3>
+      <p style="opacity:.85">Hint: when we started our relationship</p>
+      <input id="pwd" placeholder="e.g. May 17" style="width:100%;padding:10px;border-radius:12px;border:none" />
+      <button class="primary" onclick="checkPwd()">Unlock</button>
+      <div class="message" id="lockMsg"></div>
+    </div>
     <div class="title">open when it’s</div>
-    <div class="name">Prakriti ❤️</div>
-    <div class="time" id="countdown">
-      <div class="box"><div class="num" id="days">00</div><div class="label">DAYS</div></div>
-      <div class="box"><div class="num" id="hours">00</div><div class="label">HOURS</div></div>
-      <div class="box"><div class="num" id="minutes">00</div><div class="label">MINS</div></div>
+    <div class="name">Prakriti Lama ❤️</div>
+
+    <div class="time" id="countdown" style="display:none">
+      <div class="box"><div class="num">00</div><div class="label">DAYS</div></div>
+      <div class="box"><div class="num">00</div><div class="label">HOURS</div></div>
+      <div class="box"><div class="num">00</div><div class="label">MINS</div></div>
       <div class="box"><div class="num" id="seconds">10</div><div class="label">SECS</div></div>
     </div>
-    <div class="message" id="finalMsg">
-      Happy New Year my love 💖<br/>
-      Prakriti, this year my love for u is bigger than ever ✨
+
+    <div class="message" id="finalMsg"></div>
+
+    <div class="page" id="page1">
+      <h3>What do u expect for this year with me? 💭</h3>
+      <textarea id="q1"></textarea>
+      <button class="primary" onclick="saveAndNext('q1','expectations',2)">Next</button>
+    </div>
+
+    <div class="page" id="page2">
+      <h3>Things u wanna do (naughty but sweet) with me 😌</h3>
+      <textarea id="q2"></textarea>
+      <button class="primary" onclick="saveAndNext('q2','wants',3)">Next</button>
+    </div>
+
+    <div class="page" id="page4">
+      <h3>Three things u expect this year 🌸</h3>
+      <textarea id="q4"></textarea>
+      <button class="primary" onclick="saveAndNext('q4','expectThisYear',5)">Next</button>
+    </div>
+
+    <div class="page" id="page5">
+      <h3>Do u wanna marry me? 💍</h3>
+      <button class="primary" onclick="answerYes()">Yes</button>
+      <button class="ghost" onclick="answerNo()">No</button>
+      <div class="message" id="answer"></div>
+    </div>
+
+    <div class="page" id="page3">
+      <h3>Three things u love about me 💕</h3>
+      <textarea id="q3"></textarea>
+      <button class="primary" onclick="saveAndNext('q3','loveAbout',4)">Next</button>
+    </div>
     </div>
   </div>
 
   <div class="hearts" id="hearts"></div>
 
   <script>
-    // 10-second countdown
+    const bgm = document.getElementById('bgm');
+
+    // Typing animation
+    function typeText(el, text, cb){
+      el.innerHTML = '';
+      el.style.display = 'block';
+      let i = 0;
+      const t = setInterval(()=>{
+        el.innerHTML += text.charAt(i);
+        i++;
+        if(i >= text.length){ clearInterval(t); if(cb) cb(); }
+      }, 40);
+    }
+
+    // Countdown
     let remaining = 10;
     const secEl = document.getElementById('seconds');
     const finalMsg = document.getElementById('finalMsg');
     const countdown = document.getElementById('countdown');
-
     const timer = setInterval(() => {
       remaining--;
       secEl.textContent = String(Math.max(remaining, 0)).padStart(2, '0');
       if (remaining <= 0) {
         clearInterval(timer);
         countdown.style.display = 'none';
-        finalMsg.style.display = 'block';
+        bgm.play();
+        typeText(finalMsg, 'Happy New Year my love 💖\nThis year my love for u is bigger than ever ✨', ()=>{
+          finalMsg.innerHTML += '<br/><br/><button class="primary" onclick="goPage(1)">Next</button>';
+        });
         launchFireworks();
       }
     }, 1000);
 
-    // Hearts animation
+    // Hearts
     const hearts = document.getElementById('hearts');
     const heartEmojis = ['❤️','💖','💕','💘','💗'];
     setInterval(() => {
@@ -125,38 +155,72 @@
       setTimeout(()=>h.remove(), 7000);
     }, 350);
 
-    // Simple fireworks
+    function goPage(n){
+      document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+      finalMsg.style.display='none';
+      document.getElementById('page'+n).style.display='block';
+    }
+    function checkPwd(){
+      const v = document.getElementById('pwd').value.trim().toLowerCase();
+      const m = document.getElementById('lockMsg');
+      if(v === 'may 17' || v === '17 may'){
+        m.style.display='block';
+        typeText(m,'😌 You are safe. Welcome, my love.');
+        document.getElementById('lock').style.display='none';
+        document.getElementById('countdown').style.display='grid';
+      } else {
+        m.style.display='block';
+        typeText(m,'😠 Wrong. Try again.');
+      }
+    }
+    
+      document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+      finalMsg.style.display='none';
+      document.getElementById('page'+n).style.display='block';
+    }
+    function countSentences(t){ return t.split(/[.!?]+/).filter(s=>s.trim()).length; }
+    function saveAndNext(id,key,next){
+      const t = document.getElementById(id).value;
+      if(countSentences(t) < 3){ alert("u haven't write yet — need 3 sentences 💕"); return; }
+      localStorage.setItem(key, t);
+      goPage(next);
+    }
+
+    function answerYes(){
+      localStorage.setItem('marry','yes');
+      const a = document.getElementById('answer');
+      typeText(a,'💋💋💋💋💋
+Come here 😘 I choose u, today and always ❤️');
+      launchFireworks();
+      burstHearts();
+    }
+    function burstHearts(){
+      for(let i=0;i<30;i++){
+        const h=document.createElement('span');
+        h.textContent=Math.random()>0.5?'❤️':'🎀';
+        h.style.left=50+ (Math.random()*20-10)+'vw';
+        h.style.animationDuration=2+Math.random()*2+'s';
+        hearts.appendChild(h);
+        setTimeout(()=>h.remove(),4000);
+      }
+    }
+    function answerNo(){
+      const a = document.getElementById('answer');
+      typeText(a, '😤 Nope. Wrong answer. Try again.');
+    }
+
+    // Fireworks
     const canvas = document.getElementById('fireworks');
     const ctx = canvas.getContext('2d');
     function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
     addEventListener('resize', resize); resize();
-
     let particles = [];
-    function burst(x,y){
-      for(let i=0;i<80;i++){
-        particles.push({
-          x,y,
-          vx:(Math.random()-0.5)*6,
-          vy:(Math.random()-0.5)*6,
-          life: 60
-        });
-      }
-    }
-    function draw(){
-      ctx.fillStyle='rgba(0,0,0,0.2)';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-      particles.forEach(p=>{
-        p.x+=p.vx; p.y+=p.vy; p.vy+=0.02; p.life--;
-        ctx.fillStyle='rgba(255,200,230,0.9)';
-        ctx.fillRect(p.x,p.y,2,2);
-      });
-      particles = particles.filter(p=>p.life>0);
-      requestAnimationFrame(draw);
-    }
-    function launchFireworks(){
-      setInterval(()=>burst(Math.random()*canvas.width, Math.random()*canvas.height*0.6), 500);
-      draw();
-    }
+    function burst(x,y){ for(let i=0;i<80;i++){ particles.push({x,y,vx:(Math.random()-0.5)*6,vy:(Math.random()-0.5)*6,life:60}); } }
+    function draw(){ ctx.fillStyle='rgba(0,0,0,0.2)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+      particles.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.02; p.life--; ctx.fillStyle='rgba(255,200,230,0.9)'; ctx.fillRect(p.x,p.y,2,2); });
+      particles = particles.filter(p=>p.life>0); requestAnimationFrame(draw); }
+    function launchFireworks(){ setInterval(()=>burst(Math.random()*canvas.width, Math.random()*canvas.height*0.6), 500); draw(); }
   </script>
 </body>
 </html>
+
